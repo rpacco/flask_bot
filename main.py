@@ -7,7 +7,7 @@ api = os.getenv("api_key")
 port = int(os.getenv("PORT", 5000))
 
 app = Flask(__name__)
-bot = telebot.Bot(token=api, threaded = False)
+bot = telebot.TeleBot(token=api, threaded = False)
 URL = "https://echobot-d3d3.onrender.com"
 
 @bot.message_handler(commands=['start'])
