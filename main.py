@@ -17,6 +17,11 @@ URL = "https://echobot-d3d3.onrender.com/"
 def send_message(chat_id, text):
     bot.send_message(chat_id=chat_id, text=text)
 
+# Handler for the /start command
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    send_message(message.chat.id, "Let's play a game!")
+
 @app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
