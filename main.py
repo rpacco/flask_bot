@@ -17,9 +17,13 @@ URL = "https://echobot-d3d3.onrender.com/"
 def send_message(chat_id, text):
     bot.send_message(chat_id=chat_id, text=text)
 
-@bot.message_handler(commands=["start"])
-def start(message):
+@bot.message_handler(commands=["start", "help"])
+def handle_commands(message):
     send_message(message.chat.id, "Let's play a game!")
+
+@bot.message_handler(func=lambda message: True)
+def handle_all_messages(message):
+    send_message(message.chat.id, message.text)
 
 @app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
