@@ -3,33 +3,27 @@ import telebot
 import os
 
 
-api = os.getenv("api_key")
-port = int(os.getenv("PORT", 5000))
+TOKEN = os.getenv("api_key")
 
+bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
-bot = telebot.TeleBot(token=api, threaded = False)
-URL = "https://echobot-d3d3.onrender.com"
+URL = "https://echobot-d3d3.onrender.com/"
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
-
-
-# Webhook
-@app.route('/' + api, methods=['POST'])
+@app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
+    update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
     bot.process_new_updates([update])
     return "!", 200
-
 
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url=URL + api)
+    bot.set_webhook(url=URL + TOKEN)
     return "!", 200
 
+@bot.message_handler(func=lambda message: True)
+def echo_message(message):
+    bot.reply_to(message, message.text)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
